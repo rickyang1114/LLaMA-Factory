@@ -22,10 +22,10 @@ def create_top() -> Dict[str, "Component"]:
 
     with gr.Row():
         finetuning_type = gr.Dropdown(choices=METHODS, value="lora", scale=1)
-        adapter_path = gr.Dropdown(multiselect=True, scale=5, allow_custom_value=True)
+        adapter_path = gr.Dropdown(multiselect=True, allow_custom_value=True, scale=5)
         refresh_btn = gr.Button(scale=1)
 
-    with gr.Accordion(label="Advanced config", open=False) as advanced_tab:
+    with gr.Accordion(open=False) as advanced_tab:
         with gr.Row():
             quantization_bit = gr.Dropdown(choices=["none", "8", "4"], value="none")
             template = gr.Dropdown(choices=list(templates.keys()), value="default")

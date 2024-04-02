@@ -19,26 +19,26 @@ if is_matplotlib_available():
     import matplotlib.pyplot as plt
 
 
-def update_process_bar(callback: "LogCallback") -> Dict[str, Any]:
+def update_process_bar(callback: "LogCallback") -> "gr.Slider":
     if not callback.max_steps:
-        return gr.update(visible=False)
+        return gr.Slider(visible=False)
 
     percentage = round(100 * callback.cur_steps / callback.max_steps, 0) if callback.max_steps != 0 else 100.0
     label = "Running {:d}/{:d}: {} < {}".format(
         callback.cur_steps, callback.max_steps, callback.elapsed_time, callback.remaining_time
     )
-    return gr.update(label=label, value=percentage, visible=True)
+    return gr.Slider(label=label, value=percentage, visible=True)
 
 
 def get_time() -> str:
-    return datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    return datetime.now().strftime(r"%Y-%m-%d-%H-%M-%S")
 
 
-def can_quantize(finetuning_type: str) -> Dict[str, Any]:
+def can_quantize(finetuning_type: str) -> "gr.Dropdown":
     if finetuning_type != "lora":
-        return gr.update(value="None", interactive=False)
+        return gr.Dropdown(value="None", interactive=False)
     else:
-        return gr.update(interactive=True)
+        return gr.Dropdown(interactive=True)
 
 
 def check_json_schema(text: str, lang: str) -> None:
@@ -48,8 +48,8 @@ def check_json_schema(text: str, lang: str) -> None:
             assert isinstance(tools, list)
             for tool in tools:
                 if "name" not in tool:
-                    raise ValueError("Name not found.")
-    except ValueError:
+                    raise NotImplementedError("Name not found.")
+    except NotImplementedError:
         gr.Warning(ALERTS["err_tool_name"][lang])
     except Exception:
         gr.Warning(ALERTS["err_json_schema"][lang])
@@ -82,6 +82,7 @@ def gen_plot(base_model: str, finetuning_type: str, output_dir: str) -> "matplot
         return
 
     plt.close("all")
+    plt.switch_backend("agg")
     fig = plt.figure()
     ax = fig.add_subplot(111)
     steps, losses = [], []
@@ -95,8 +96,8 @@ def gen_plot(base_model: str, finetuning_type: str, output_dir: str) -> "matplot
     if len(losses) == 0:
         return None
 
-    ax.plot(steps, losses, alpha=0.4, label="original")
-    ax.plot(steps, smooth(losses), label="smoothed")
+    ax.plot(steps, losses, color="#1f77b4", alpha=0.4, label="original")
+    ax.plot(steps, smooth(losses), color="#1f77b4", label="smoothed")
     ax.legend()
     ax.set_xlabel("step")
     ax.set_ylabel("loss")
