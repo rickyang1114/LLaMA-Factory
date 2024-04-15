@@ -66,7 +66,7 @@ def check_dependencies() -> None:
         require_version("accelerate>=0.27.2", "To fix: pip install accelerate>=0.27.2")
         require_version("peft>=0.10.0", "To fix: pip install peft>=0.10.0")
         require_version("trl>=0.8.1", "To fix: pip install trl>=0.8.1")
-        require_version("gradio>4.0.0,<=4.21.0", "To fix: pip install gradio==4.21.0")
+        require_version("gradio>=4.0.0,<=4.21.0", "To fix: pip install gradio==4.21.0")
 
 
 def count_parameters(model: torch.nn.Module) -> Tuple[int, int]:
@@ -193,16 +193,11 @@ def infer_optim_dtype(model_dtype: torch.dtype) -> torch.dtype:
         return torch.float32
 
 
-def is_path_available(path: os.PathLike) -> bool:
+def has_tokenized_data(path: os.PathLike) -> bool:
     r"""
-    Checks if the path is empty or not exist.
+    Checks if the path has a tokenized dataset.
     """
-    if not os.path.exists(path):
-        return True
-    elif os.path.isdir(path) and not os.listdir(path):
-        return True
-    else:
-        return False
+    return os.path.isdir(path) and len(os.listdir(path)) > 0
 
 
 def torch_gc() -> None:

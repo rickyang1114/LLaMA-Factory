@@ -120,7 +120,7 @@ def get_train_args(args: Optional[Dict[str, Any]] = None) -> _TRAIN_CLS:
 
     if (
         finetuning_args.stage == "ppo"
-        and training_args.report_to is not None
+        and training_args.report_to
         and training_args.report_to[0] not in ["wandb", "tensorboard"]
     ):
         raise ValueError("PPO only accepts wandb or tensorboard logger.")
@@ -277,7 +277,11 @@ def get_infer_args(args: Optional[Dict[str, Any]] = None) -> _INFER_CLS:
 
     _verify_model_args(model_args, finetuning_args)
 
-    model_args.device_map = "auto"
+    if model_args.export_dir is not None:
+        model_args.device_map = {"": "cpu"}
+        model_args.compute_dtype = torch.float32
+    else:
+        model_args.device_map = "auto"
 
     return model_args, data_args, finetuning_args, generating_args
 
