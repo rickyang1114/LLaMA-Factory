@@ -527,6 +527,21 @@ _register_template(
 
 
 _register_template(
+    name="cohere",
+    format_user=StringFormatter(
+        slots=[
+            (
+                "<|START_OF_TURN_TOKEN|><|USER_TOKEN|>{{content}}<|END_OF_TURN_TOKEN|>"
+                "<|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|>"
+            )
+        ]
+    ),
+    format_system=EmptyFormatter(slots=[{"bos_token"}]),
+    force_system=True,
+)
+
+
+_register_template(
     name="cpm",
     format_user=StringFormatter(slots=["<用户>{{content}}<AI>"]),
     format_system=StringFormatter(slots=[{"bos_token"}, "{{content}}"]),
@@ -563,6 +578,13 @@ _register_template(
     format_user=StringFormatter(slots=["Human: {{content}}\nAssistant: "]),
     format_system=StringFormatter(slots=["{{content}}\n"]),
     format_separator=EmptyFormatter(slots=["\n"]),
+)
+
+
+_register_template(
+    name="empty",
+    format_user=StringFormatter(slots=["{{content}}"]),
+    format_assistant=StringFormatter(slots=["{{content}}"]),
 )
 
 
@@ -636,8 +658,27 @@ _register_template(
 
 
 _register_template(
+    name="llama3",
+    format_user=StringFormatter(
+        slots=[
+            (
+                "<|start_header_id|>user<|end_header_id|>\n\n{{content}}<|eot_id|>"
+                "<|start_header_id|>assistant<|end_header_id|>\n\n"
+            )
+        ]
+    ),
+    format_system=StringFormatter(
+        slots=[{"bos_token"}, "<|start_header_id|>system<|end_header_id|>\n\n{{content}}<|eot_id|>"]
+    ),
+    default_system="You are a helpful assistant.",
+    stop_words=["<|eot_id|>"],
+    replace_eos=True,
+)
+
+
+_register_template(
     name="mistral",
-    format_user=StringFormatter(slots=["[INST] {{content}} [/INST]"]),
+    format_user=StringFormatter(slots=[" [INST] {{content}} [/INST]"]),
     format_system=StringFormatter(slots=[{"bos_token"}, "{{content}}"]),
     force_system=True,
 )

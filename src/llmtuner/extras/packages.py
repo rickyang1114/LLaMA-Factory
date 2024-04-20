@@ -25,6 +25,10 @@ def is_galore_available():
     return _is_package_available("galore_torch")
 
 
+def is_gradio_available():
+    return _is_package_available("gradio")
+
+
 def is_jieba_available():
     return _is_package_available("jieba")
 
@@ -47,10 +51,6 @@ def is_rouge_available():
 
 def is_starlette_available():
     return _is_package_available("sse_starlette")
-
-
-def is_unsloth_available():
-    return _is_package_available("unsloth")
 
 
 def is_uvicorn_available():

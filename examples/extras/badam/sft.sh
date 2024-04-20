@@ -1,16 +1,18 @@
 #!/bin/bash
 
-CUDA_VISIBLE_DEVICES=0 python ../../src/train_bash.py \
+CUDA_VISIBLE_DEVICES=0 python ../../../src/train_bash.py \
     --stage sft \
     --do_train \
     --model_name_or_path meta-llama/Llama-2-7b-hf \
     --dataset alpaca_gpt4_en,glaive_toolcall \
-    --dataset_dir ../../data \
+    --dataset_dir ../../../data \
     --template default \
-    --finetuning_type lora \
-    --lora_target q_proj,v_proj \
-    --loraplus_lr_ratio 16.0 \
-    --output_dir ../../saves/LLaMA2-7B/loraplus/sft \
+    --finetuning_type full \
+    --use_badam \
+    --badam_switch_mode descending \
+    --badam_switch_block_every 50 \
+    --badam_verbose 2 \
+    --output_dir ../../../saves/LLaMA2-7B/badam/sft \
     --overwrite_cache \
     --overwrite_output_dir \
     --cutoff_len 1024 \
@@ -30,4 +32,4 @@ CUDA_VISIBLE_DEVICES=0 python ../../src/train_bash.py \
     --max_samples 3000 \
     --val_size 0.1 \
     --plot_loss \
-    --fp16
+    --pure_bf16
